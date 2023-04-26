@@ -26,9 +26,9 @@ for (let i = 0; i < pokemonList.length; i++) {
 
   if (pokemonHeight > 0.6) {
     document.write(
-      `${pokemonName} (height: ${pokemonHeight}) - Wow, that’s big!\n`
+      `<p>${pokemonName} (height: ${pokemonHeight}) - Wow, that’s big!</p>`
     );
   } else {
-    document.write(`${pokemonName} (height: ${pokemonHeight})\n`);
+    document.write(`<p>${pokemonName} (height: ${pokemonHeight})</p>`);
   }
 }
