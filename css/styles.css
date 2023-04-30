@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+.pokemon-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pokemon-list li {
+  display: flex;
+  justify-content: center;
+  flex-basis: 100%;
+  padding: 0;
+}
+
+@media screen and (min-width: 480px) {
+  .pokemon-list li {
+    flex-basis: calc(50% - 20px);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .pokemon-list li {
+    flex-basis: calc(33.33% - 20px);
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .pokemon-list li {
+    flex-basis: calc(25% - 20px);
+  }
+}
+
+.pokemon-button {
+  font-family: "Press Start 2P", sans-serif;
+  padding: 20px 40px;
+  border-radius: 5px;
+  border: none;
+  width: 220px;
+}
