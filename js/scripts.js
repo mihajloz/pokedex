@@ -1,13 +1,26 @@
 let pokemonRepository = (function () {
   let pokemonRepository = [];
+  let apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=150";
+
+  function showLoadingMessage() {
+    let message = document.createElement("div");
+    message.innerText = "Loading...";
+    message.classList.add("loading-message");
+    document.body.appendChild(message);
+  }
+
+  function hideLoadingMessage() {
+    let message = document.querySelector(".loading-message");
+    if (message) {
+      message.remove();
+    }
+  }
 
   function add(pokemon) {
     if (
       typeof pokemon === "object" &&
       Object.keys.length &&
-      "name" in pokemon &&
-      "height" in pokemon &&
-      "types" in pokemon
+      "name" in pokemon
     ) {
       pokemonRepository.push(pokemon);
     } else {
@@ -21,10 +34,6 @@ let pokemonRepository = (function () {
 
   function findPokemon(name) {
     return pokemonRepository.filter((pokemon) => pokemon.name === name);
-  }
-
-  function showDetails(pokemon) {
-    console.log(pokemon);
   }
 
   function addButtonClickListener(button, pokemon) {
@@ -45,170 +54,64 @@ let pokemonRepository = (function () {
     addButtonClickListener(button, pokemon);
   }
 
+  function loadList() {
+    showLoadingMessage();
+    return fetch(apiUrl)
+      .then(function (response) {
+        hideLoadingMessage();
+        return response.json();
+      })
+      .then(function (json) {
+        json.results.forEach(function (item) {
+          let pokemon = {
+            name: item.name,
+            detailsUrl: item.url,
+          };
+          add(pokemon);
+        });
+      })
+      .catch(function (e) {
+        hideLoadingMessage();
+        console.error(e);
+      });
+  }
+
+  function loadDetails(item) {
+    let url = item.detailsUrl;
+    return fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (details) {
+        item.imageUrl = details.sprites.front_default;
+        item.height = details.height;
+        item.weight = details.weight;
+        item.types = details.types.map((type) => type.type.name);
+      })
+      .catch(function (e) {
+        console.error(e);
+      });
+  }
+
+  function showDetails(pokemon) {
+    loadDetails(pokemon).then(function () {
+      console.log(pokemon);
+    });
+  }
+
   return {
     add: add,
     getAll: getAll,
     findPokemon: findPokemon,
     addListItem: addListItem,
+    loadList: loadList,
+    loadDetails: loadDetails,
+    showDetails: showDetails,
   };
 })();
 
-pokemonRepository.add({
-  name: "Bulbasaur",
-  height: 0.7,
-  types: ["grass", "poison"],
-});
-
-pokemonRepository.add({
-  name: "Charmander",
-  height: 0.6,
-  types: ["fire"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.add({
-  name: "Squirtle",
-  height: 0.5,
-  types: ["water"],
-});
-
-pokemonRepository.getAll().forEach(function (pokemon) {
-  pokemonRepository.addListItem(pokemon);
+pokemonRepository.loadList().then(function () {
+  pokemonRepository.getAll().forEach(function (pokemon) {
+    pokemonRepository.addListItem(pokemon);
+  });
 });
