@@ -45,9 +45,15 @@ let pokemonRepository = (function () {
   function addListItem(pokemon) {
     let pokemonList = document.querySelector(".pokemon-list");
     let listItem = document.createElement("li");
+    listItem.classList.add("list-group-item"); // Add Bootstrap class
+
     let button = document.createElement("button");
     button.innerText = pokemon.name;
     button.classList.add("pokemon-button");
+    button.classList.add("btn", "btn-success"); // Add Bootstrap classes
+    button.setAttribute("data-toggle", "modal");
+    button.setAttribute("data-target", "#pokemonModal");
+
     listItem.appendChild(button);
     pokemonList.appendChild(listItem);
 
@@ -93,75 +99,36 @@ let pokemonRepository = (function () {
       });
   }
 
-  // function showDetails(pokemon) {
-  //   loadDetails(pokemon).then(function () {
-  //     console.log(pokemon);
-  //   });
-  // }
-
   function showDetails(pokemon) {
     loadDetails(pokemon).then(function () {
-      let modalContainer = document.querySelector("#modal-container");
-      modalContainer.innerHTML = "";
-
-      let modal = document.createElement("div");
-      modal.classList.add("modal");
-
-      let closeButton = document.createElement("button");
-      closeButton.classList.add("modal-close");
-      closeButton.innerText = "Close";
-      closeButton.addEventListener("click", hideModal);
-
-      let name = document.createElement("h1");
-      name.classList.add("pokemon-name");
-      name.innerText = pokemon.name;
-
-      let image = document.createElement("img");
-      image.classList.add("pokemon-image");
-      image.src = pokemon.imageUrl;
-
-      let height = document.createElement("p");
-      height.classList.add("pokemon-height");
-      height.innerText = "Height: " + pokemon.height;
-
-      let weight = document.createElement("p");
-      weight.classList.add("pokemon-weight");
-      weight.innerText = "Weight: " + pokemon.weight;
-
-      const types = document.createElement("p");
-      types.classList.add("pokemon-types");
-      types.innerText = `Type: ${pokemon.types.join(", ")}`;
-
-      modal.appendChild(closeButton);
-      modal.appendChild(name);
-      modal.appendChild(image);
-      modal.appendChild(height);
-      modal.appendChild(weight);
-      modal.appendChild(types);
-      modalContainer.appendChild(modal);
-
-      modalContainer.classList.add("is-visible");
-
-      modalContainer.addEventListener("click", (e) => {
-        let target = e.target;
-        if (target === modalContainer) {
-          hideModal();
-        }
-      });
+      showModal(pokemon);
     });
   }
 
-  function hideModal() {
-    let modalContainer = document.querySelector("#modal-container");
-    modalContainer.classList.remove("is-visible");
-  }
+  function showModal(item) {
+    let modalBody = $(".modal-body");
+    let modalTitle = $(".modal-title");
+    modalTitle.empty();
+    modalBody.empty();
 
-  window.addEventListener("keydown", (e) => {
-    let modalContainer = document.querySelector("#modal-container");
-    if (e.key === "Escape" && modalContainer.classList.contains("is-visible")) {
-      hideModal();
-    }
-  });
+    //creating element for name in modal content
+    let nameElement = $("<h1 class='modalPokemonName'>" + item.name + "</h1>");
+    // // creating img in modal content
+    let imageElement = $('<img class="modal-img" style="width:50%">');
+    imageElement.attr("src", item.imageUrl);
+    // //creating element for height in modal content
+    let heightElement = $("<p>" + "Height : " + item.height + "</p>");
+    // //creating element for weight in modal content
+    let weightElement = $("<p>" + "Weight : " + item.weight + "</p>");
+    // //creating element for type in modal content
+    let typesElement = $("<p>" + "Types : " + item.types + "</p>");
+
+    modalTitle.append(nameElement);
+    modalBody.append(imageElement);
+    modalBody.append(heightElement);
+    modalBody.append(weightElement);
+    modalBody.append(typesElement);
+  }
 
   return {
     add: add,
@@ -171,6 +138,7 @@ let pokemonRepository = (function () {
     loadList: loadList,
     loadDetails: loadDetails,
     showDetails: showDetails,
+    showModal: showModal,
   };
 })();
 
