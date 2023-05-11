@@ -130,6 +130,35 @@ let pokemonRepository = (function () {
     modalBody.append(typesElement);
   }
 
+  function searchPokemon() {
+    let searchInput = document.getElementById("search-input");
+    let searchText = searchInput.value.toLowerCase();
+    let allPokemon = document.querySelectorAll(".list-group-item");
+
+    allPokemon.forEach(function (pokemon) {
+      let pokemonText = pokemon
+        .querySelector(".pokemon-button")
+        .innerText.toLowerCase();
+      let searchList = document.querySelector(".pokemon-list");
+
+      if (pokemonText.includes(searchText)) {
+        searchList.classList.add("search-list");
+        pokemon.style.display = "inline-block";
+      } else {
+        pokemon.style.display = "none";
+      }
+
+      if (!searchInput.value) {
+        searchList.classList.remove("search-list");
+      }
+    });
+  }
+
+  let searchInput = document.getElementById("search-input");
+  searchInput.addEventListener("input", function () {
+    searchPokemon();
+  });
+
   return {
     add: add,
     getAll: getAll,
